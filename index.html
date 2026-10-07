@@ -106,12 +106,10 @@ async function loadSites() {
   loadErr = error ? "Could not load websites. Check your Supabase settings." : "";
   sites = data || [];
 }
-async function refreshOwner() {
-  const { data: { session } } = await sb.auth.getSession();
-  isOwner = !!session && session.user.id === OWNER_ID;
-  render();
-}
-sb.auth.onAuthStateChange(() => refreshOwner());
+function setOwner(session) { isOwner = !!session && session.user.id === OWNER_ID; render(); }
+async function refreshOwner() { const { data: { session } } = await sb.auth.getSession(); setOwner(session); }
+// No Supabase calls inside this callback (they can deadlock the login)
+sb.auth.onAuthStateChange((event, session) => setOwner(session));
 
 const isVideo = m => m.type === "video";
 const thumbOf = s => (s.media || []).find(m => !isVideo(m));
@@ -189,10 +187,13 @@ document.querySelectorAll("[data-close]").forEach(b => b.onclick = () => $(b.dat
 
 /* Owner login */
 $("loginGo").onclick = async () => {
-  const { data, error } = await sb.auth.signInWithPassword({ email: $("l-email").value.trim(), password: $("l-pass").value });
-  if (error) { $("loginMsg").textContent = error.message; return; }
-  if (data.user.id !== OWNER_ID) { await sb.auth.signOut(); $("loginMsg").textContent = "This account is not the site owner."; return; }
-  $("l-pass").value = ""; $("loginDlg").close();
+  const msg = $("loginMsg"); msg.textContent = "Logging in…";
+  try {
+    const { data, error } = await sb.auth.signInWithPassword({ email: $("l-email").value.trim(), password: $("l-pass").value });
+    if (error) { msg.textContent = error.message; return; }
+    if (data.user.id !== OWNER_ID) { await sb.auth.signOut(); msg.textContent = "Login worked, but OWNER_ID in index.html doesn't match this account's UID."; return; }
+    $("l-pass").value = ""; msg.textContent = ""; $("loginDlg").close();
+  } catch (e) { msg.textContent = "Login failed: " + (e.message || e); }
 };
 
 /* Add website (owner only; the database enforces this too) */
