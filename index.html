@@ -44,7 +44,7 @@ main{max-width:1000px;margin:0 auto;padding:36px 20px 80px}
 .detail .link{color:var(--acc);word-break:break-all}
 .desc{white-space:pre-wrap;max-width:68ch;margin:20px 0}
 .media{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px;margin:24px 0}
-.media img,.media video{width:100%;border-radius:12px;border:1px solid var(--line);background:#000}
+.media img,.media video{width:100%;aspect-ratio:16/9;object-fit:contain;border-radius:12px;border:1px solid var(--line);background:#000;display:block}
 .row{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}
 .creator{display:flex;gap:28px;align-items:center;flex-wrap:wrap}
 .photo{width:200px;height:200px;border-radius:50%;object-fit:cover;object-position:center 20%;background:var(--card);border:3px solid var(--acc);display:grid;place-items:center;font:800 3.4rem 'Bricolage Grotesque',sans-serif;color:var(--acc)}
@@ -153,7 +153,7 @@ function renderSite(id) {
   if (!s) { $("app").innerHTML = `<div class="empty">Website not found. <a href="#/">Back to home</a></div>`; return; }
   const media = (s.media || []).map(m => isVideo(m)
     ? `<video src="${esc(m.url)}" controls preload="metadata"></video>`
-    : `<img src="${esc(m.url)}" alt="${esc(s.title)}" loading="lazy">`).join("");
+    : `<a href="${esc(m.url)}" target="_blank" rel="noopener" title="Open full size"><img src="${esc(m.url)}" alt="${esc(s.title)}" loading="lazy"></a>`).join("");
   $("app").innerHTML = `<div class="detail">
     <p><a href="#/">← All websites</a></p>
     <h1>${esc(s.title)}</h1>
