@@ -10,7 +10,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@500;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
 <style>
-:root{--bg:#101a2c;--card:#18263d;--line:#2a3c5a;--ink:#e8eef7;--mute:#9db0cc;--acc:#ffb43b;--accink:#241800;--bad:#ff7a7a;color-scheme:dark}
+:root{--fb:'Inter',system-ui,sans-serif;--fh:'Bricolage Grotesque','Inter',system-ui,sans-serif;--ls:-.02em;--bg:#101a2c;--card:#18263d;--line:#2a3c5a;--ink:#e8eef7;--mute:#9db0cc;--acc:#ffb43b;--accink:#241800;--bad:#ff7a7a;color-scheme:dark}
 [data-mode=light]{--card:#fff;--ink:#14213a;--mute:#5b6b86;--bad:#c62f2f;color-scheme:light}
 [data-mode=dark][data-theme=ocean]{--bg:#0a1a24;--card:#112a38;--line:#1f4357;--acc:#4cc9f0;--accink:#04212c}
 [data-mode=dark][data-theme=violet]{--bg:#15112b;--card:#1f1a40;--line:#36306a;--acc:#b79cff;--accink:#1c0f40}
@@ -25,8 +25,8 @@
 [data-mode=light][data-theme=sunset]{--bg:#fbf1ea;--line:#f1d9c9;--acc:#e8590c;--accink:#fff}
 *{box-sizing:border-box}
 html,body{margin:0}
-body{background:radial-gradient(1100px 520px at 85% -10%,color-mix(in srgb,var(--acc) 14%,transparent),transparent 60%) fixed,var(--bg);color:var(--ink);font:400 16px/1.65 'Inter',system-ui,-apple-system,Segoe UI,sans-serif;-webkit-font-smoothing:antialiased}
-h1,h2,h3,.brand{font-family:'Bricolage Grotesque','Inter',system-ui,sans-serif;line-height:1.12;margin:0;letter-spacing:-.02em}
+body{background:radial-gradient(1100px 520px at 85% -10%,color-mix(in srgb,var(--acc) 14%,transparent),transparent 60%) fixed,var(--bg);color:var(--ink);font:400 1rem/1.65 var(--fb);-webkit-font-smoothing:antialiased}
+h1,h2,h3,.brand{font-family:var(--fh);line-height:1.12;margin:0;letter-spacing:var(--ls)}
 a{color:inherit}
 :focus-visible{outline:3px solid var(--acc);outline-offset:2px}
 header{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:16px max(20px,5vw);border-bottom:1px solid var(--line)}
@@ -71,7 +71,7 @@ footer button{background:none;border:0;color:var(--mute);cursor:pointer;font:inh
 .tbox{position:relative}
 .tbox .btn{padding:7px 14px}
 [hidden]{display:none!important}
-#themePop{position:absolute;right:0;top:calc(100% + 10px);width:250px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px;z-index:20;box-shadow:0 14px 34px rgba(0,0,0,.35)}
+#themePop{max-height:80vh;overflow:auto;position:absolute;right:0;top:calc(100% + 10px);width:270px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px;z-index:20;box-shadow:0 14px 34px rgba(0,0,0,.35)}
 .plabel{margin:0 0 8px;font-size:.78rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--mute)}
 .seg{display:flex;gap:6px;margin-bottom:14px}
 .seg button{flex:1;border:1px solid var(--line);background:transparent;color:var(--ink);border-radius:9px;padding:7px 4px;font:inherit;font-size:.88rem;cursor:pointer}
@@ -79,9 +79,36 @@ footer button{background:none;border:0;color:var(--mute);cursor:pointer;font:inh
 .sw{display:flex;gap:10px;flex-wrap:wrap}
 .sw button{width:34px;height:34px;border-radius:50%;border:3px solid transparent;cursor:pointer;box-shadow:inset 0 0 0 1px rgba(0,0,0,.2)}
 .sw button.on{border-color:var(--ink)}
+#themePop select{width:100%;margin-bottom:14px;padding:8px 10px}
+#themePop input[type=range]{padding:0;accent-color:var(--acc);margin:2px 0 10px}
+#themePop .btn{padding:6px 12px;font-size:.88rem}
+#fsVal{float:right;text-transform:none;letter-spacing:0}
 </style>
 <script>
 (function(){try{var m=localStorage.getItem('mode')||'auto',t=localStorage.getItem('theme')||'amber',d=m==='auto'?matchMedia('(prefers-color-scheme: dark)').matches:m==='dark',r=document.documentElement;r.dataset.mode=d?'dark':'light';r.dataset.theme=t}catch(e){}})();
+</script>
+<script>
+var FONTS={
+ inter:{n:"Inter (default)",b:"'Inter',system-ui,sans-serif",h:"'Bricolage Grotesque','Inter',system-ui,sans-serif",l:"-.02em"},
+ dmsans:{n:"DM Sans",b:"'DM Sans',system-ui,sans-serif",g:"DM+Sans:wght@400;500;600;700",l:"-.02em"},
+ poppins:{n:"Poppins",b:"'Poppins',system-ui,sans-serif",g:"Poppins:wght@400;500;600;700",l:"-.01em"},
+ lora:{n:"Lora (serif)",b:"'Lora',Georgia,serif",g:"Lora:wght@400;500;600;700",l:"-.01em"},
+ atkinson:{n:"Atkinson Hyperlegible",b:"'Atkinson Hyperlegible',system-ui,sans-serif",g:"Atkinson+Hyperlegible:wght@400;700",l:"0"},
+ mono:{n:"JetBrains Mono",b:"'JetBrains Mono',ui-monospace,monospace",g:"JetBrains+Mono:wght@400;500;700",l:"0"},
+ system:{n:"System default",b:"system-ui,-apple-system,'Segoe UI',sans-serif",l:"-.01em"}
+};
+function applyType(){
+  var k="inter",s=16;
+  try{k=localStorage.getItem("font")||"inter";s=parseInt(localStorage.getItem("fsize"))||16}catch(e){}
+  if(!FONTS[k])k="inter"; s=Math.min(22,Math.max(14,s));
+  var f=FONTS[k],r=document.documentElement;
+  if(f.g&&!document.getElementById("gf-"+k)){var l=document.createElement("link");l.id="gf-"+k;l.rel="stylesheet";l.href="https://fonts.googleapis.com/css2?family="+f.g+"&display=swap";document.head.appendChild(l)}
+  r.style.setProperty("--fb",f.b);r.style.setProperty("--fh",f.h||f.b);r.style.setProperty("--ls",f.l);
+  r.style.fontSize=s+"px";
+  var sel=document.getElementById("fontSel"),rg=document.getElementById("fsRange"),v=document.getElementById("fsVal");
+  if(sel)sel.value=k; if(rg)rg.value=s; if(v)v.textContent=s+"px";
+}
+applyType();
 </script>
 </head>
 <body>
@@ -256,12 +283,18 @@ function applyTheme() {
   document.querySelectorAll("#themePop [data-st]").forEach(b => b.classList.toggle("on", b.dataset.st === t));
 }
 $("themePop").innerHTML = `<p class="plabel">Mode</p><div class="seg">${[["light","☀ Light"],["dark","🌙 Dark"],["auto","Auto"]].map(([k,n]) => `<button data-sm="${k}">${n}</button>`).join("")}</div>
-  <p class="plabel">Colour theme</p><div class="sw">${Object.entries(THEMES).map(([k,[n,c]]) => `<button data-st="${k}" style="background:${c}" aria-label="${n}" title="${n}"></button>`).join("")}</div>`;
-$("themePop").onclick = e => { const b = e.target.closest("button"); if (!b) return; if (b.dataset.sm) savePref("mode", b.dataset.sm); if (b.dataset.st) savePref("theme", b.dataset.st); applyTheme(); };
+  <p class="plabel">Colour theme</p><div class="sw">${Object.entries(THEMES).map(([k,[n,c]]) => `<button data-st="${k}" style="background:${c}" aria-label="${n}" title="${n}"></button>`).join("")}</div>
+  <p class="plabel" style="margin-top:16px">Font</p><select id="fontSel">${Object.entries(FONTS).map(([k,f]) => `<option value="${k}">${f.n}</option>`).join("")}</select>
+  <p class="plabel">Text size <span id="fsVal"></span></p><input type="range" id="fsRange" min="14" max="22" step="1" aria-label="Text size">
+  <button class="btn ghost" id="typeReset">Reset font and size</button>`;
+$("fontSel").onchange = e => { savePref("font", e.target.value); applyType(); };
+$("fsRange").oninput = e => { savePref("fsize", e.target.value); applyType(); };
+$("themePop").onclick = e => { const b = e.target.closest("button"); if (!b) return; if (b.id === "typeReset") { savePref("font", "inter"); savePref("fsize", "16"); applyType(); return; } if (b.dataset.sm) savePref("mode", b.dataset.sm); if (b.dataset.st) savePref("theme", b.dataset.st); applyTheme(); };
 $("themeBtn").onclick = e => { e.stopPropagation(); const p = $("themePop"); p.hidden = !p.hidden; $("themeBtn").setAttribute("aria-expanded", String(!p.hidden)); };
 document.addEventListener("click", e => { if (!e.target.closest(".tbox")) { $("themePop").hidden = true; $("themeBtn").setAttribute("aria-expanded", "false"); } });
 matchMedia("(prefers-color-scheme: dark)").addEventListener("change", applyTheme);
 applyTheme();
+applyType();
 
 window.addEventListener("hashchange", render);
 (async () => { await loadSites(); await refreshOwner(); })();
